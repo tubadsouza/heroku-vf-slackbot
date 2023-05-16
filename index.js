@@ -141,6 +141,9 @@ async function interact(userID, say, client, request) {
   // Generate a unique session ID
   let session = createSessionId();
 
+  // Log the session ID
+console.log(`Session ID: ${session}`);
+
   // call the Voiceflow API with the user's name & request, get back a response
   try {
     const response = await axios({
