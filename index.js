@@ -121,6 +121,17 @@ app.message(ANY_WORD_REGEX, async ({ message, say, client }) => {
   console.log(`⚡️ Bolt app is running!`)
 })()
 
+//Generate a SessionID
+
+function createSession() {
+  var session_id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0,
+        v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+  return session_id;
+}
+
 // Interact with Voiceflow | Dialog Manager API
 async function interact(userID, say, client, request) {
   clearTimeout(noreply);
@@ -134,8 +145,8 @@ async function interact(userID, say, client, request) {
   try {
     const response = await axios({
       method: 'POST',
-      url: `https://general-runtime.voiceflow.com/state/user/${userID}/interact`,
-      headers: { Authorization: VOICEFLOW_API_KEY, 'Content-Type': 'application/json' },
+      url: `https://general-runtime.voiceflow.com/state//${versionID}/user/${userID}/interact`,
+      headers: { Authorization: VOICEFLOW_API_KEY, 'Content-Type': 'application/json', sessionid: session },
       data: {
         request,
         config: {
