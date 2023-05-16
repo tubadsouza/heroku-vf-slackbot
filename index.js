@@ -145,7 +145,7 @@ async function interact(userID, say, client, request) {
   try {
     const response = await axios({
       method: 'POST',
-      url: `https://general-runtime.voiceflow.com/state/user/${userID}/interact`,
+      url: `https://general-runtime.voiceflow.com/state/${versionID}/user/${userID}/interact`,
       headers: { Authorization: VOICEFLOW_API_KEY, 'Content-Type': 'application/json', sessionid: session},
       data: {
         request,
