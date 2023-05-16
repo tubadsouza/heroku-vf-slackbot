@@ -129,7 +129,7 @@ function createSession() {
         v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
-  return session_id;
+  return sessionid;
 }
 
 // Interact with Voiceflow | Dialog Manager API
