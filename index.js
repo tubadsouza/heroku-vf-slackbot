@@ -6,6 +6,8 @@ import * as Home from './components/home.js'
 import axios from 'axios'
 import { Text } from 'slate'
 import escapeHtml from 'escape-html'
+import { v4 as uuidv4 } from 'uuid';
+
 
 const VOICEFLOW_API_KEY = process.env.VOICEFLOW_API_KEY
 const SLACK_APP_TOKEN = process.env.SLACK_APP_TOKEN
@@ -21,6 +23,11 @@ const app = new App({
   socketMode: true,
   appToken: SLACK_APP_TOKEN,
 })
+
+// Function to create a unique session ID
+function createSessionId() {
+  return uuidv4();
+}
 
 // Slack app_mention event
 app.event('app_mention', async ({ event, client, say }) => {
@@ -121,16 +128,6 @@ app.message(ANY_WORD_REGEX, async ({ message, say, client }) => {
   console.log(`⚡️ Bolt app is running!`)
 })()
 
-//Generate a SessionID
-
-function createSession() {
-  var session_id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0,
-        v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-  return sessionid;
-}
 
 // Interact with Voiceflow | Dialog Manager API
 async function interact(userID, say, client, request) {
@@ -141,12 +138,15 @@ async function interact(userID, say, client, request) {
   let userName = i.user.profile.real_name_normalized;
   let userPix = i.user.profile.image_48;
 
+  // Generate a unique session ID
+  let session = createSessionId();
+
   // call the Voiceflow API with the user's name & request, get back a response
   try {
     const response = await axios({
       method: 'POST',
       url: `https://general-runtime.voiceflow.com/state/user/${userID}/interact`,
-      headers: { Authorization: VOICEFLOW_API_KEY, 'Content-Type': 'application/json'},
+      headers: { Authorization: VOICEFLOW_API_KEY, 'Content-Type': 'application/json', 'sessionid': session},
       data: {
         request,
         config: {
